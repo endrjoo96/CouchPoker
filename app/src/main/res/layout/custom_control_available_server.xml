@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/server_name_text"
+        android:id="@+id/textView_serverName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nazwa dostępnego serwera"
@@ -20,18 +20,32 @@
         android:id="@+id/const1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Wolnych miejsc:"
+        android:layout_marginTop="4dp"
+        android:text=" @ "
+        android:textColor="#AAA9A9"
+        android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/server_name_text" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_serverName" />
 
     <TextView
-        android:id="@+id/available_slots_text"
+        android:id="@+id/textView_ipAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:text="6"
+        android:layout_marginTop="4dp"
+        android:text="adres.ip.dostepnego.serwera"
+        android:textColor="#AAA9A9"
+        android:textStyle="italic"
         app:layout_constraintStart_toEndOf="@+id/const1"
-        app:layout_constraintTop_toBottomOf="@+id/server_name_text" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_serverName" />
+
+    <Button
+        android:id="@+id/button_serverSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_ipAddress" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
