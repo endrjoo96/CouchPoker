@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/button_siup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Siup"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
@@ -23,7 +31,9 @@
             android:id="@+id/serverList_linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+        </LinearLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

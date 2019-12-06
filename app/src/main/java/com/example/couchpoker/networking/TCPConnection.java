@@ -1,5 +1,7 @@
 package com.example.couchpoker.networking;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
@@ -26,20 +29,33 @@ public class TCPConnection {
                 DataOutputStream outputStream = new DataOutputStream(internalSocket.getOutputStream());
                 BufferedReader streamFromServer = new BufferedReader(new InputStreamReader(internalSocket.getInputStream()));
 
-                outputStream.writeBytes(uuID);
                 String received = streamFromServer.readLine();
+                System.out.println("received: "+received);
 
-                internalSocket.close();
+                byte[] message = uuID.getBytes(StandardCharsets.UTF_8);
+                outputStream.write(message, 0, message.length);
+
+                received = streamFromServer.readLine();
+                System.out.println("received: "+received);
+
+                if("SEND_NICKNAME".equals(received)){
+                    byte[] nickname = clientName.getBytes(StandardCharsets.UTF_8);
+                    outputStream.write(nickname, 0, nickname.length);
+                }
+                else if(("HI_"+clientName).equals(received)) return internalSocket;
+                else internalSocket = null;
+
+                System.out.println("received: "+received);
 
             } catch (IOException ioex) {
                 ioex.printStackTrace();
+                internalSocket = null;
             }
             return internalSocket;
         });
 
         try {
-            runnableFuture.run();
-            while (!runnableFuture.isDone()) Thread.sleep(200);
+            new Thread(runnableFuture).start();
             returnValue = runnableFuture.get();
         } catch (InterruptedException intex){
             intex.printStackTrace();
@@ -47,7 +63,6 @@ public class TCPConnection {
             exex.printStackTrace();
         }
 
-        if (returnValue != null) return returnValue;
-        throw new NullPointerException("Function did not returned any socket connected to server");
+        return returnValue;
     }
 }

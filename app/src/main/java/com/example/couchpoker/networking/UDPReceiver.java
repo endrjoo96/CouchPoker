@@ -1,15 +1,10 @@
 package com.example.couchpoker.networking;
 
-import android.app.Activity;
-
-import com.example.couchpoker.MainActivity;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.function.Consumer;
 
 public class UDPReceiver {
@@ -50,7 +45,7 @@ public class UDPReceiver {
                     byte[] data = new byte[packet.getLength()];
                     System.arraycopy(tmpData, packet.getOffset(), data, 0, packet.getLength());
                     String message = new String(data, StandardCharsets.UTF_8);
-                    if (dataReceived != null && isFromThisSystem(message) ) {
+                    if (dataReceived != null && isHeaderKeyCorrect(message) ) {
                         dataReceived.accept(new DataReceivedArgs(message, packet.getAddress()));
                     }
                 } catch (IOException ioex) {
@@ -71,7 +66,7 @@ public class UDPReceiver {
         else throw new NullPointerException("Receiver thread has not been initiated (probably could not set socket?)");
     }
 
-    private boolean isFromThisSystem(String message){
+    private boolean isHeaderKeyCorrect(String message){
         if(message.length()>=key.length()) {
             if (message.substring(0, key.length()).equals(key)) {
                 return true;
