@@ -35,16 +35,18 @@ public class TCPDataExchanger {
             stopThread = false;
 
             receiver = new Thread(() -> {
-                try{
-                BufferedReader streamFromServer = new BufferedReader(new InputStreamReader(connectedClient.getInputStream()));
                 while(!stopThread) {
-                        String message = streamFromServer.readLine();
-                        if (ReceivedMessage != null) {
-                            ReceivedMessage.accept(new ReceivedMessageEventArgs(message));
+                    try {
+                        BufferedReader streamFromServer = new BufferedReader(new InputStreamReader(connectedClient.getInputStream()));
+                        while (!stopThread) {
+                            String message = streamFromServer.readLine();
+                            if (ReceivedMessage != null) {
+                                ReceivedMessage.accept(new ReceivedMessageEventArgs(message));
+                            }
                         }
-                }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             });
 

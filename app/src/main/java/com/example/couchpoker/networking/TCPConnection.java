@@ -19,8 +19,8 @@ public class TCPConnection {
 
     public static Socket getConnection(InetAddress serverAddress) {
         Socket returnValue = null;
-        String uuID = "mojeuuidheheh";
-        String clientName = "jerneXD";
+        String uuID = com.example.couchpoker.files.Settings.getID();
+        String clientName = com.example.couchpoker.files.Settings.getUsername();
 
         RunnableFuture<Socket> runnableFuture = new FutureTask<Socket>(()->{
             Socket internalSocket = null;
