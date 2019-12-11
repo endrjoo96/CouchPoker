@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static Socket connectedSocket;
 
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +96,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
-
-
-
         receiver = new UDPReceiver();
         receiver.dataReceived = this::onServerBroadcastReceive;
         receiver.runReceiver();
@@ -144,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
             srv.onButtonPress = this::onConnectingToServer;
             linearLayout.addView(srv.getView());
         }*/
+
+
     }
 
     private void onConnectingToServer(InetAddress ipAddress){

@@ -10,12 +10,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.couchpoker.cards.Card;
 import com.example.couchpoker.networking.TCPDataExchanger;
 import com.example.couchpoker.string_keys.KEYWORD;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.security.acl.Group;
 
 public class GameActivity extends AppCompatActivity implements CardsFragment.OnFragmentInteractionListener, WaitingFragment.OnFragmentInteractionListener {
 
@@ -34,6 +37,8 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     ImageView card2;
     SeekBar raiseSelect;
 
+    ToggleButton tggle_checkfold, tggle_check, tggle_fold, tggle_raise;
+
     Card[] cards;
 
     TCPDataExchanger exchanger;
@@ -49,6 +54,12 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         exchanger = new TCPDataExchanger(connectedSocket);
         exchanger.ReceivedMessage = this::onDataFromServerReceived;
         exchanger.runReceiver();
+
+        tggle_check = findViewById(R.id.toggleButton_check);
+        tggle_checkfold = findViewById(R.id.toggleButton_check_fold);
+        tggle_fold = findViewById(R.id.toggleButton_fold);
+        tggle_raise= findViewById(R.id.toggleButton_raise);
+
 
         label1 = findViewById(R.id.textView_label1);
         label2 = findViewById(R.id.textView_label2);
@@ -68,6 +79,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
 
         figure.setVisibility(View.INVISIBLE);
         label1.setVisibility(View.INVISIBLE);
+        switchAppState(false);
 
         fragment_cards.setOnLongClickListener((View v)->{
             onShowCardsLongPress();
@@ -97,6 +109,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         raise.setOnClickListener(this::onRaise);
         fold.setOnClickListener(this::onFold);
 
+        fragment_waiting.bringToFront();
 
     }
 
@@ -147,6 +160,10 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
                 runOnUiThread(()->{onMyTurn();});
                 break;
             }
+            case KEYWORD.SERVER_RECEIVED_MESSAGE.EOT:{
+                runOnUiThread(()->{updateUI();});
+                break;
+            }
             default:{
                 if(incrementor<cardsToReceive){
                     cards[incrementor] = new Card(value, message);
@@ -156,20 +173,28 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         }
     }
 
+    private void updateUI(){
+        //TODO: set values to ui controls
+    }
+
     private void onCheck(View v){
         new Thread(()->{exchanger.sendMessage("CHECK");}).start();
-
+        switchAppState(false);
     }
 
     private void onRaise(View v){
         new Thread(()->{exchanger.sendMessage("RAISE"+selectedRaiseValue);}).start();
+        switchAppState(false);
     }
 
     private void onFold(View v){
         new Thread(()->{exchanger.sendMessage("FOLD");}).start();
+        switchAppState(false);
     }
 
     private void onMyTurn(){
+        switchAppState(true);
+
         minimalValueToRaise = checkValue+bigBlindValue;
         raiseSelect.setMax((totalBallance-checkValue-currentBet)/10);
         raiseSelect.setProgress(minimalValueToRaise/10);
@@ -199,8 +224,33 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         label1.setVisibility(View.INVISIBLE);
     }
 
+    private void switchAppState(boolean isMyTurn){
+        check.setEnabled(isMyTurn);
+        raise.setEnabled(isMyTurn);
+        fold.setEnabled(isMyTurn);
+        int visibility;
+        if(isMyTurn){
+            visibility = View.INVISIBLE;
+        }
+        else visibility = View.VISIBLE;
+        tggle_raise.setVisibility(visibility);
+        tggle_fold.setVisibility(visibility);
+        tggle_checkfold.setVisibility(visibility);
+        tggle_check.setVisibility(visibility);
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            connectedSocket.close();
+        } catch (IOException ioex){
+            ioex.printStackTrace();
+        }
+        super.onBackPressed();
     }
 }

@@ -14,5 +14,6 @@ public abstract class KEYWORD {
         public static final String BIG_BLIND = "BIG_BLIND";
         public static final String YOUR_FIGURE = "YOUR_FIGURE";
         public static final String WAITING_FOR_YOUR_MOVE = "WAITING_FOR_YOUR_MOVE";
+        public static final String EOT = "EOT";
     }
 }

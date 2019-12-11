@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
     tools:context=".GameActivity">
+
+    <fragment
+        android:id="@+id/fragment_waiting"
+        android:name="com.example.couchpoker.WaitingFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
         android:id="@+id/fragment_cards"
@@ -35,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Figure on hand:"
+        android:text="On hand:"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,16 +87,17 @@
     <Button
         android:id="@+id/button_fold"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:text="Fold"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_raise"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_raise" />
 
     <SeekBar
         android:id="@+id/seekBar_raiseValue"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        style="@style/Widget.AppCompat.SeekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -99,7 +110,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_currentBet" />
+        app:layout_constraintTop_toBottomOf="@+id/button_raise"></SeekBar>
 
     <TextView
         android:id="@+id/textView_label2"
@@ -110,49 +121,109 @@
         android:text="Your bet:"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_check" />
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_raiseValue" />
 
     <TextView
         android:id="@+id/textView_currentBet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$ 4000"
+        android:text="$4000"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/textView_label2"
         app:layout_constraintTop_toBottomOf="@+id/textView_label2" />
 
     <TextView
-        android:id="@+id/textView_label3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Your ballance:"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_fold" />
-
-    <TextView
         android:id="@+id/textView_ballance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="8dp"
         android:text="$ 1000"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/textView_label3"
-        app:layout_constraintTop_toBottomOf="@+id/textView_label3" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView_label3" />
 
-    <fragment
-        android:id="@+id/fragment_waiting"
-        android:name="com.example.couchpoker.WaitingFragment"
+    <TextView
+        android:id="@+id/textView_label3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Your balance:"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_ballance"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView_ballance" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_check_fold"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:text="Check/Fold"
+        android:textOff="Check/Fold"
+        android:textOn="Check/Fold"
+        app:layout_constraintBottom_toBottomOf="@+id/toggleButton_raise"
+        app:layout_constraintEnd_toStartOf="@+id/divider3"
+        app:layout_constraintTop_toBottomOf="@+id/toggleButton_fold" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_check"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="ToggleButton"
+        android:textOff="CHECK\n$ 100"
+        android:textOn="CHECK $"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider3"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_raiseValue" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_fold"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:text="ToggleButton"
+        android:textOff="FOLD"
+        android:textOn="FOLD"
+        app:layout_constraintBottom_toBottomOf="@+id/toggleButton_check"
+        app:layout_constraintEnd_toStartOf="@+id/divider3"
+        app:layout_constraintStart_toStartOf="@+id/toggleButton_check_fold"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_raiseValue" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_raise"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="ToggleButton"
+        android:textOff="RAISE\n$ 1000"
+        android:textOn="RAISE $"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider3"
+        app:layout_constraintTop_toBottomOf="@+id/toggleButton_check" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.67"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_predecision"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="toggleButton_check,toggleButton_check_fold,toggleButton_fold,toggleButton_raise" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
