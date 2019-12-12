@@ -28,6 +28,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     private int currentBet=0;
     private int minimalValueToRaise=0;
     private int selectedRaiseValue;
+    private boolean inGame=false;
 
     Button check, raise, fold;
     TextView label1, label2, label3;
@@ -79,10 +80,9 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
 
         figure.setVisibility(View.INVISIBLE);
         label1.setVisibility(View.INVISIBLE);
-        switchAppState(false);
 
         fragment_cards.setOnLongClickListener((View v)->{
-            onShowCardsLongPress();
+            if(inGame) onShowCardsLongPress();
             return true;
         });
         fragment_cards.setOnTouchListener(new View.OnTouchListener() {
@@ -109,7 +109,9 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         raise.setOnClickListener(this::onRaise);
         fold.setOnClickListener(this::onFold);
 
+
         fragment_waiting.bringToFront();
+        fragment_waiting.requestLayout();
 
     }
 
@@ -125,6 +127,8 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         switch (message){
             case KEYWORD.SERVER_RECEIVED_MESSAGE.STARTED_NEW_ROUND:{
                 runOnUiThread(()->{
+                    inGame=true;
+                    switchAppState(false);
                     fragment_waiting.setVisibility(View.INVISIBLE);
                     figure.setText("NONE");
                 });
@@ -230,7 +234,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         fold.setEnabled(isMyTurn);
         int visibility;
         if(isMyTurn){
-            visibility = View.INVISIBLE;
+            visibility = View.GONE;
         }
         else visibility = View.VISIBLE;
         tggle_raise.setVisibility(visibility);

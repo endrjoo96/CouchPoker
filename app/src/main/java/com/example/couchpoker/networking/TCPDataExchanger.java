@@ -46,6 +46,7 @@ public class TCPDataExchanger {
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                        if(connectedClient==null || !connectedClient.isConnected()) stopThread=true;
                     }
                 }
             });
