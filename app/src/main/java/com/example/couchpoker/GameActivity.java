@@ -19,6 +19,8 @@ import com.example.couchpoker.string_keys.KEYWORD;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.acl.Group;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GameActivity extends AppCompatActivity implements CardsFragment.OnFragmentInteractionListener, WaitingFragment.OnFragmentInteractionListener {
 
@@ -39,6 +41,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     SeekBar raiseSelect;
 
     ToggleButton tggle_checkfold, tggle_check, tggle_fold, tggle_raise;
+    ArrayList<ToggleButton> toggles;
 
     Card[] cards;
 
@@ -60,7 +63,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         tggle_checkfold = findViewById(R.id.toggleButton_check_fold);
         tggle_fold = findViewById(R.id.toggleButton_fold);
         tggle_raise= findViewById(R.id.toggleButton_raise);
-
+        toggles = new ArrayList(Arrays.asList(tggle_check, tggle_checkfold, tggle_fold, tggle_raise));
 
         label1 = findViewById(R.id.textView_label1);
         label2 = findViewById(R.id.textView_label2);
@@ -82,28 +85,27 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         label1.setVisibility(View.INVISIBLE);
 
         fragment_cards.setOnLongClickListener((View v)->{
-            if(inGame) onShowCardsLongPress();
-            return true;
-        });
+            if(inGame) onShowCardsLongPress(); return true; });
         fragment_cards.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent event) {
-            if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                onShowCardsRelease();
-                return false;
+                if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    onShowCardsRelease();
+                    return false;
                 }
-            return GameActivity.super.onTouchEvent(event);
+                return GameActivity.super.onTouchEvent(event);
             }
         });
 
         raiseSelect.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                selectedRaiseValue = (progress*10)+currentBet+bigBlindValue;
-                raise.setText(new String("raise\n$ "+selectedRaiseValue));
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { onSeekBarValueChanged(progress); }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {  }
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {  }
         });
+
+        for (ToggleButton toggle:toggles) {
+            toggle.setOnClickListener(this::onToggle);
+        }
+
 
         check.setOnClickListener(this::onCheck);
         raise.setOnClickListener(this::onRaise);
@@ -137,6 +139,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
             case KEYWORD.SERVER_RECEIVED_MESSAGE.SENDING_CARDS:{
                 cardsToReceive=Integer.parseInt(value);
                 incrementor=0;
+                cards = new Card[cardsToReceive];
                 break;
             }
             case KEYWORD.SERVER_RECEIVED_MESSAGE.YOUR_BALLANCE:{
@@ -177,8 +180,30 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         }
     }
 
+    private void onToggle(View v){
+        for (ToggleButton toggle : toggles) {
+            if(toggle != (ToggleButton)v){
+                toggle.setChecked(false);
+            }
+        }
+    }
+
     private void updateUI(){
-        //TODO: set values to ui controls
+        minimalValueToRaise = checkValue+bigBlindValue;
+        raiseSelect.setMax((totalBallance-checkValue-currentBet)/10);
+        raiseSelect.setProgress(minimalValueToRaise/10);
+
+        check.setText("check\n$ "+(checkValue));
+        raise.setText("raise\n$ "+ minimalValueToRaise);
+
+        currentBetText.setText("$ "+currentBet);
+        ballance.setText("$ "+totalBallance);
+
+        tggle_check.setTextOff(check.getText());
+        tggle_check.setTextOn(check.getText());
+
+        tggle_raise.setTextOff(raise.getText());
+        tggle_raise.setTextOn(raise.getText());
     }
 
     private void onCheck(View v){
@@ -198,20 +223,15 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
 
     private void onMyTurn(){
         switchAppState(true);
+        updateUI();
+    }
 
-        minimalValueToRaise = checkValue+bigBlindValue;
-        raiseSelect.setMax((totalBallance-checkValue-currentBet)/10);
-        raiseSelect.setProgress(minimalValueToRaise/10);
-
-        check.setText("check\n$ "+(checkValue));
-        raise.setText("raise\n$ "+ minimalValueToRaise);
-
-        currentBetText.setText("$ "+currentBet);
-        ballance.setText("$ "+totalBallance);
+    private void onSeekBarValueChanged(int progress){
+        selectedRaiseValue = (progress*10)+currentBet+bigBlindValue;
+        raise.setText(new String("raise\n$ "+selectedRaiseValue));
     }
 
     private void onShowCardsLongPress(){
-        System.out.println("long pressed");
         card1.setImageResource(cards[0].getDrawableID());
         card2.setImageResource(cards[1].getDrawableID());
         figure.setVisibility(View.VISIBLE);
@@ -219,7 +239,6 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     }
 
     private void onShowCardsRelease(){
-        System.out.println("released");
         ImageView card1 = findViewById(R.id.imageView_card1);
         card1.setImageResource(R.drawable.red_back);
         ImageView card2 = findViewById(R.id.imageView_card2);
@@ -244,9 +263,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
+    public void onFragmentInteraction(Uri uri) {  }
 
     @Override
     public void onBackPressed() {

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static Socket connectedSocket;
 
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,19 +136,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         LinearLayout linearLayout = findViewById(R.id.serverList_linearLayout);
-        /*for(int i=0; i<20; i++){
-            AvailableServer srv = new AvailableServer("testsrv"+i, null);
-            srv.onButtonPress = this::onConnectingToServer;
-            linearLayout.addView(srv.getView());
-        }*/
-
-
     }
 
     private void onConnectingToServer(InetAddress ipAddress){
-        runOnUiThread(()->{
-            //some animation or shit, need to disable availability to press other buttons anyway
-        });
         new Thread(()->{
             connectedSocket = TCPConnection.getConnection(ipAddress);
             if(connectedSocket==null){
