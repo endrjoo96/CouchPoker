@@ -31,6 +31,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     private int minimalValueToRaise=0;
     private int selectedRaiseValue;
     private boolean inGame=false;
+    private boolean foldOnNextTurn=false;
 
     Button check, raise, fold;
     TextView label1, label2, label3;
@@ -131,7 +132,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
                 runOnUiThread(()->{
                     inGame=true;
                     switchAppState(false);
-                    fragment_waiting.setVisibility(View.INVISIBLE);
+                    fragment_waiting.setVisibility(View.GONE);
                     figure.setText("NONE");
                 });
                 break;
@@ -144,18 +145,31 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
             }
             case KEYWORD.SERVER_RECEIVED_MESSAGE.YOUR_BALLANCE:{
                 totalBallance = Integer.parseInt(value);
+                runOnUiThread(()->{updateUI();});
                 break;
             }
             case KEYWORD.SERVER_RECEIVED_MESSAGE.YOUR_BET:{
                 currentBet = Integer.parseInt(value);
+                runOnUiThread(()->{updateUI();});
                 break;
             }
             case KEYWORD.SERVER_RECEIVED_MESSAGE.CHECK_VALUE:{
+                if(checkValue<Integer.parseInt(value)){
+                    foldOnNextTurn=true;
+                    if(Integer.parseInt(value) == selectedRaiseValue &&
+                    tggle_raise.isChecked())
+                        tggle_check.setChecked(true);
+                    else tggle_check.setChecked(false);
+                    tggle_raise.setChecked(false);
+                }
+                else foldOnNextTurn=false;
                 checkValue = Integer.parseInt(value);
+                runOnUiThread(()->{updateUI();});
                 break;
             }
             case KEYWORD.SERVER_RECEIVED_MESSAGE.BIG_BLIND:{
                 bigBlindValue = Integer.parseInt(value);
+                runOnUiThread(()->{updateUI();});
                 break;
             }
             case KEYWORD.SERVER_RECEIVED_MESSAGE.YOUR_FIGURE:{
@@ -188,13 +202,19 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         }
     }
 
+    private void refreshToggles() {
+        for (ToggleButton toggle : toggles) {
+            toggle.setChecked(toggle.isChecked());
+        }
+    }
+
     private void updateUI(){
         minimalValueToRaise = checkValue+bigBlindValue;
         raiseSelect.setMax((totalBallance-checkValue-currentBet)/10);
-        raiseSelect.setProgress(minimalValueToRaise/10);
 
         check.setText("check\n$ "+(checkValue));
         raise.setText("raise\n$ "+ minimalValueToRaise);
+        //selectedRaiseValue = minimalValueToRaise;
 
         currentBetText.setText("$ "+currentBet);
         ballance.setText("$ "+totalBallance);
@@ -204,31 +224,86 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
 
         tggle_raise.setTextOff(raise.getText());
         tggle_raise.setTextOn(raise.getText());
+
+        refreshToggles();
     }
 
     private void onCheck(View v){
         new Thread(()->{exchanger.sendMessage("CHECK");}).start();
+        totalBallance -= checkValue;
+        updateUI();
         switchAppState(false);
     }
 
     private void onRaise(View v){
         new Thread(()->{exchanger.sendMessage("RAISE"+selectedRaiseValue);}).start();
+        totalBallance -= selectedRaiseValue;
+        updateUI();
         switchAppState(false);
     }
 
     private void onFold(View v){
         new Thread(()->{exchanger.sendMessage("FOLD");}).start();
         switchAppState(false);
+        for(ToggleButton tggle : toggles){
+            tggle.setChecked(false);
+            tggle.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void onMyTurn(){
-        switchAppState(true);
+        raiseSelect.setProgress(0);
         updateUI();
+
+        int toggled=-1;
+        if((toggled=preActionToggled())==-1) {
+            switchAppState(true);
+        }
+        else {
+            executeActionFromToggle(toggled);
+        }
+    }
+
+    private int preActionToggled(){
+        for(int i=0; i<toggles.size();i++){
+            if(toggles.get(i).isChecked()) return i;
+        }
+        return -1;
+    }
+
+    private void executeActionFromToggle(int index){
+        switch (index){
+            case 0:{    // toggle_check
+                onCheck(null);
+                break;
+            }
+            case 1:{    // toggle_checkfold
+                if(!foldOnNextTurn) onCheck(null);
+                else onFold(null);
+                foldOnNextTurn=false;
+                break;
+            }
+            case 2:{    // toggle_fold
+                onFold(null);
+                break;
+            }
+            case 3:{    // toggle_raise
+                onRaise(null);
+                break;
+            }
+        }
+        toggles.get(index).setChecked(false);
     }
 
     private void onSeekBarValueChanged(int progress){
-        selectedRaiseValue = (progress*10)+currentBet+bigBlindValue;
-        raise.setText(new String("raise\n$ "+selectedRaiseValue));
+        selectedRaiseValue = (progress*10)+checkValue+bigBlindValue;
+
+        raise.setText("raise\n$ "+ selectedRaiseValue);
+
+        tggle_raise.setTextOff(raise.getText());
+        tggle_raise.setTextOn(raise.getText());
+        tggle_raise.setEnabled(true);
+        refreshToggles();
     }
 
     private void onShowCardsLongPress(){
@@ -248,22 +323,27 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     }
 
     private void switchAppState(boolean isMyTurn){
-        check.setEnabled(isMyTurn);
-        raise.setEnabled(isMyTurn);
-        fold.setEnabled(isMyTurn);
-        int visibility;
-        if(isMyTurn){
-            visibility = View.GONE;
-        }
-        else visibility = View.VISIBLE;
-        tggle_raise.setVisibility(visibility);
-        tggle_fold.setVisibility(visibility);
-        tggle_checkfold.setVisibility(visibility);
-        tggle_check.setVisibility(visibility);
+        runOnUiThread(()->{
+            check.setEnabled(isMyTurn);
+            raise.setEnabled(isMyTurn);
+            fold.setEnabled(isMyTurn);
+            int visibility;
+            if(isMyTurn){
+                visibility = View.INVISIBLE;
+            }
+            else visibility = View.VISIBLE;
+            for(ToggleButton btn : toggles){
+                btn.setVisibility(visibility);
+            }
+            /*tggle_raise.setVisibility(visibility);
+            tggle_fold.setVisibility(visibility);
+            tggle_checkfold.setVisibility(visibility);
+            tggle_check.setVisibility(visibility);*/
+        });
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {  }
+    public void onFragmentInteraction(Uri uri) { }
 
     @Override
     public void onBackPressed() {

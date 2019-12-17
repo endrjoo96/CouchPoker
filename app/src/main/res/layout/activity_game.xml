@@ -213,17 +213,10 @@
         android:id="@+id/divider3"
         android:layout_width="1dp"
         android:layout_height="0dp"
-        android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.67"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_predecision"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="toggleButton_check,toggleButton_check_fold,toggleButton_fold,toggleButton_raise" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

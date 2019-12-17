@@ -1,6 +1,12 @@
 package com.example.couchpoker.networking;
 
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.MainThread;
+import androidx.annotation.UiThread;
+
+import com.example.couchpoker.MainActivity;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -42,7 +48,13 @@ public class TCPConnection {
                     byte[] nickname = clientName.getBytes(StandardCharsets.UTF_8);
                     outputStream.write(nickname, 0, nickname.length);
                 }
-                else if(("HI_"+clientName).equals(received)) return internalSocket;
+                else if((received).contains("HI_")){
+                    if(!("HI_"+clientName).equals(received)){
+
+                        //Toast.makeText(MainActivity.context, "Grasz jako: "+received.substring(received.indexOf("_")), Toast.LENGTH_LONG).show();
+                    }
+                    return internalSocket;
+                }
                 else internalSocket = null;
 
                 System.out.println("received: "+received);

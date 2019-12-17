@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
             }).create();
             dialog.show();
         });
-
-        LinearLayout linearLayout = findViewById(R.id.serverList_linearLayout);
     }
 
     private void onConnectingToServer(InetAddress ipAddress){
@@ -149,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
             }
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
+            LinearLayout linearLayout = findViewById(R.id.serverList_linearLayout);
+            runOnUiThread(()->{linearLayout.removeAllViews();});
         }).start();
 
     }
