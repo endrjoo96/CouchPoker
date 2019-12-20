@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,19 +115,19 @@ public class MainActivity extends AppCompatActivity {
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            Dialog dialog = builder.setView(layout).setTitle("Zmień swoją nazwę").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            Dialog dialog = builder.setView(layout).setTitle(R.string.main_popup_title).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     String username = (editText.getText().toString());
                     if(username.length()<3){
-                        Toast.makeText(context, "Nazwa musi zawierać minimum 3 znaki", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, R.string.main_popup_toast_negative, Toast.LENGTH_LONG).show();
                         return;
                     }
                     saveUsername(username);
-                    Toast.makeText(context, "Nazwa zmieniona na: "+username, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, getResources().getText(R.string.main_popup_name_changed_to)+" "+username, Toast.LENGTH_LONG).show();
                     dialogInterface.dismiss();
                 }
-            }).setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
@@ -134,21 +135,47 @@ public class MainActivity extends AppCompatActivity {
             }).create();
             dialog.show();
         });
+
+        Button refresh = findViewById(R.id.button_refresh);
+        refresh.setOnClickListener((View v) ->{
+            LinearLayout linearLayout = findViewById(R.id.serverList_linearLayout);
+            linearLayout.removeAllViews();
+        });
     }
 
     private void onConnectingToServer(InetAddress ipAddress){
         new Thread(()->{
+            /*LinearLayout l = new LinearLayout(this);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View v = inflater.inflate(R.layout.layout_nickname_popup, null);
+            Dialog dialog = builder.setView(new View(this)).create();
+            //Dialog dialog = builder.setView(new View(this)).create();
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+            params.copyFrom(dialog.getWindow().getAttributes());
+            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+            params.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+            runOnUiThread(()->{
+                dialog.show();
+                dialog.getWindow().setAttributes(params);
+            });
+*/
             connectedSocket = TCPConnection.getConnection(ipAddress);
             if(connectedSocket==null){
                 runOnUiThread(()->{
-                    Toast.makeText(this,"Server not responding", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.main_toast_server_not_responding, Toast.LENGTH_SHORT).show();
+                    //dialog.dismiss();
                 });
                 return;
             }
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
             LinearLayout linearLayout = findViewById(R.id.serverList_linearLayout);
-            runOnUiThread(()->{linearLayout.removeAllViews();});
+            runOnUiThread(()->{
+                linearLayout.removeAllViews();
+                //dialog.dismiss();
+            });
         }).start();
 
     }

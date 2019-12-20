@@ -67,7 +67,10 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         tggle_checkfold = findViewById(R.id.toggleButton_check_fold);
         tggle_fold = findViewById(R.id.toggleButton_fold);
         tggle_raise= findViewById(R.id.toggleButton_raise);
-        toggles = new ArrayList(Arrays.asList(tggle_check, tggle_checkfold, tggle_fold, tggle_raise));
+        toggles = new ArrayList(Arrays.asList(tggle_check, tggle_checkfold, tggle_fold, tggle_raise)); //do not change order
+
+        tggle_checkfold.setTextOff(R.string.game_check+"/"+R.string.game_fold);
+        tggle_checkfold.setTextOn(tggle_checkfold.getTextOff());
 
         label1 = findViewById(R.id.textView_label1);
         label2 = findViewById(R.id.textView_label2);
@@ -215,8 +218,8 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         minimalValueToRaise = checkValue+bigBlindValue;
         raiseSelect.setMax((totalBallance-checkValue-currentBet)/10);
 
-        check.setText("check\n$ "+(checkValue));
-        raise.setText("raise\n$ "+ minimalValueToRaise);
+        check.setText(R.string.game_check+"\n$ "+(checkValue));
+        raise.setText(R.string.game_raise+"\n$ "+ minimalValueToRaise);
         //selectedRaiseValue = minimalValueToRaise;
 
         currentBetText.setText("$ "+currentBet);
@@ -301,7 +304,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     private void onSeekBarValueChanged(int progress){
         selectedRaiseValue = (progress*10)+checkValue+bigBlindValue;
 
-        raise.setText("raise\n$ "+ selectedRaiseValue);
+        raise.setText(R.string.game_raise+"\n$ "+ selectedRaiseValue);
 
         tggle_raise.setTextOff(raise.getText());
         tggle_raise.setTextOn(raise.getText());
