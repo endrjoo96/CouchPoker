@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.couchpoker.cards.Card;
@@ -21,6 +22,8 @@ import java.net.Socket;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity implements CardsFragment.OnFragmentInteractionListener, WaitingFragment.OnFragmentInteractionListener {
 
@@ -335,23 +338,35 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
             for(ToggleButton btn : toggles){
                 btn.setVisibility(visibility);
             }
-            /*tggle_raise.setVisibility(visibility);
-            tggle_fold.setVisibility(visibility);
-            tggle_checkfold.setVisibility(visibility);
-            tggle_check.setVisibility(visibility);*/
         });
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) { }
 
+    private volatile boolean backPressedOnce=false;
     @Override
     public void onBackPressed() {
-        try {
-            connectedSocket.close();
-        } catch (IOException ioex){
-            ioex.printStackTrace();
+        if(backPressedOnce) {
+            exchanger.stopReceiver();
+            try {
+                connectedSocket.close();
+            } catch (IOException ioex) {
+                ioex.printStackTrace();
+            }
+            super.onBackPressed();
         }
-        super.onBackPressed();
+        else {
+            Toast.makeText(this, "Wciśnij jeszcze raz, aby się rozłączyć", Toast.LENGTH_SHORT).show();
+            backPressedOnce = true;
+            Timer t = new Timer();
+            t.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    backPressedOnce=false;
+                    t.cancel();
+                }
+            }, 1000, 1000);
+        }
     }
 }

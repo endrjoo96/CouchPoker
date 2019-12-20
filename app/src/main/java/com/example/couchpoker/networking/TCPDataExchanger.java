@@ -1,5 +1,7 @@
 package com.example.couchpoker.networking;
 
+import com.example.couchpoker.security.Security;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -40,6 +42,7 @@ public class TCPDataExchanger {
                         BufferedReader streamFromServer = new BufferedReader(new InputStreamReader(connectedClient.getInputStream()));
                         while (!stopThread) {
                             String message = streamFromServer.readLine();
+                            message = Security.decrypt_data(message);
                             if (ReceivedMessage != null) {
                                 ReceivedMessage.accept(new ReceivedMessageEventArgs(message));
                             }
@@ -61,7 +64,7 @@ public class TCPDataExchanger {
 
     public void sendMessage(String msg){
         if(connectedClient!=null) {
-            messageToSend = msg.getBytes(StandardCharsets.UTF_8);
+            messageToSend = Security.encrypt_data(msg).getBytes(StandardCharsets.UTF_8);
 
             sender = new Thread(()->{
                 try {

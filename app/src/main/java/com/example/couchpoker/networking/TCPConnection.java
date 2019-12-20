@@ -7,6 +7,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.UiThread;
 
 import com.example.couchpoker.MainActivity;
+import com.example.couchpoker.security.Security;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -36,16 +37,14 @@ public class TCPConnection {
                 BufferedReader streamFromServer = new BufferedReader(new InputStreamReader(internalSocket.getInputStream()));
 
                 String received = streamFromServer.readLine();
-                System.out.println("received: "+received);
 
-                byte[] message = uuID.getBytes(StandardCharsets.UTF_8);
+                byte[] message = (Security.encrypt_data(uuID)).getBytes(StandardCharsets.UTF_8);
                 outputStream.write(message, 0, message.length);
 
                 received = streamFromServer.readLine();
-                System.out.println("received: "+received);
-
+                received = Security.decrypt_data(received);
                 if("SEND_NICKNAME".equals(received)){
-                    byte[] nickname = clientName.getBytes(StandardCharsets.UTF_8);
+                    byte[] nickname = Security.encrypt_data(clientName).getBytes(StandardCharsets.UTF_8);
                     outputStream.write(nickname, 0, nickname.length);
                 }
                 else if((received).contains("HI_")){
@@ -56,8 +55,6 @@ public class TCPConnection {
                     return internalSocket;
                 }
                 else internalSocket = null;
-
-                System.out.println("received: "+received);
 
             } catch (IOException ioex) {
                 ioex.printStackTrace();
