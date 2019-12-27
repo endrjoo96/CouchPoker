@@ -36,9 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private UDPReceiver receiver;
 
     public static Socket connectedSocket;
-
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             View v = inflater.inflate(R.layout.layout_nickname_popup, null);
-
 
             Dialog dialog = builder.setView(v).create();
             //Dialog dialog = builder.setView(new View(this)).create();
@@ -95,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-
         receiver = new UDPReceiver();
         receiver.dataReceived = this::onServerBroadcastReceive;
         receiver.runReceiver();
@@ -110,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
             EditText editText = new EditText(layout.getContext());
             editText.setLayoutParams(lp);
             layout.addView(editText);
-
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -150,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout linearLayout = findViewById(R.id.serverList_linearLayout);
             runOnUiThread(()->{linearLayout.removeAllViews();});
         }).start();
-
     }
 
     private void onServerBroadcastReceive(UDPReceiver.DataReceivedArgs args){
