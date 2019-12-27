@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="8sp"
+    android:background="#A6FFFFFF"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="8dp"
     tools:context=".MainActivity">
 
     <TextView
@@ -12,6 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nazwa dostępnego serwera"
+        android:textColor="#000000"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,9 +24,8 @@
         android:id="@+id/const1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text=" @ "
-        android:textColor="#AAA9A9"
+        android:textColor="@color/colorAccent"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_serverName" />
@@ -31,9 +34,8 @@
         android:id="@+id/textView_ipAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="adres.ip.dostepnego.serwera"
-        android:textColor="#AAA9A9"
+        android:textColor="@color/colorAccent"
         android:textStyle="italic"
         app:layout_constraintStart_toEndOf="@+id/const1"
         app:layout_constraintTop_toBottomOf="@+id/textView_serverName" />

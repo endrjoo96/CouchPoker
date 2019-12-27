@@ -1,6 +1,27 @@
 <resources>
     <string name="app_name">CouchPoker</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="first_launch_hello_player">Hello, player!</string>
+    <string name="first_launch_message">To start playing, enter your nickname below. Next, choose available server from list. Good luck!</string>
+    <string name="username">Username</string>
+    <string name="first_launch_start_game">Start playing!</string>
+
+    <string name="main_button_settings">Settings</string>
+    <string name="main_button_refresh">Refresh</string>
+    <string name="main_popup_title">Change your nickname</string>
+    <string name="main_popup_toast_negative">Name should contain at least 3 characters</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="main_popup_name_changed_to">Name changed to:</string>
+    <string name="main_toast_server_not_responding">Server not responding</string>
+
+    <string name="game_raise">Raise</string>
+    <string name="game_check">Check</string>
+    <string name="game_fold">Fold</string>
+    <string name="game_your_bet">Your bet:</string>
+    <string name="game_total_balance">Your balance:</string>
+    <string name="game_on_hand">On hand:</string>
+    <string name="game_toast_press_again">Press again to disconnect…</string>
+
+    <string name="waiting_for_start">Waiting for game to start…</string>
 </resources>

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">CouchPoker</string>
+
+    <string name="first_launch_hello_player">Witaj, graczu!</string>
+    <string name="first_launch_message">Aby rozpocząć grę, wpisz swoją nazwę użytkownika poniżej. Następnie wybierz dostępny serwer z listy. Powodzenia!</string>
+    <string name="username">Nazwa użytkownika</string>
+    <string name="first_launch_start_game"> Rozpocznij grę!</string>
+
+    <string name="main_button_settings">Ustawienia</string>
+    <string name="main_button_refresh">Odśwież</string>
+    <string name="main_popup_title">Zmień swoją nazwę</string>
+    <string name="main_popup_toast_negative">Nazwa musi zawierać minimum 3 znaki</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Anuluj</string>
+    <string name="main_popup_name_changed_to">Nazwa zmieniona na:</string>
+    <string name="main_toast_server_not_responding">Serwer nie odpowiada</string>
+
+    <string name="game_raise">Podbij</string>
+    <string name="game_check">Sprawdź</string>
+    <string name="game_fold">Poddaj</string>
+    <string name="game_your_bet">Stawiasz:</string>
+    <string name="game_total_balance">Na koncie:</string>
+    <string name="game_on_hand">Figura:</string>
+    <string name="game_toast_press_again">Wciśnij jeszcze raz, aby się rozłączyć…</string>
+
+    <string name="waiting_for_start">Oczekiwanie na rozpoczęcie gry…</string>
+</resources>

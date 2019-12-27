@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.couchpoker.cards.Card;
@@ -21,6 +22,8 @@ import java.net.Socket;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity implements CardsFragment.OnFragmentInteractionListener, WaitingFragment.OnFragmentInteractionListener {
 
@@ -64,7 +67,10 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         tggle_checkfold = findViewById(R.id.toggleButton_check_fold);
         tggle_fold = findViewById(R.id.toggleButton_fold);
         tggle_raise= findViewById(R.id.toggleButton_raise);
-        toggles = new ArrayList(Arrays.asList(tggle_check, tggle_checkfold, tggle_fold, tggle_raise));
+        toggles = new ArrayList(Arrays.asList(tggle_check, tggle_checkfold, tggle_fold, tggle_raise)); //do not change order
+
+        tggle_checkfold.setTextOff(getResources().getText(R.string.game_check)+"/"+getResources().getText(R.string.game_fold));
+        tggle_checkfold.setTextOn(tggle_checkfold.getTextOff());
 
         label1 = findViewById(R.id.textView_label1);
         label2 = findViewById(R.id.textView_label2);
@@ -212,8 +218,8 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         minimalValueToRaise = checkValue+bigBlindValue;
         raiseSelect.setMax((totalBallance-checkValue-currentBet)/10);
 
-        check.setText("check\n$ "+(checkValue));
-        raise.setText("raise\n$ "+ minimalValueToRaise);
+        check.setText(getResources().getText(R.string.game_check)+"\n$ "+(checkValue));
+        raise.setText(getResources().getText(R.string.game_raise)+"\n$ "+ minimalValueToRaise);
         //selectedRaiseValue = minimalValueToRaise;
 
         currentBetText.setText("$ "+currentBet);
@@ -298,7 +304,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     private void onSeekBarValueChanged(int progress){
         selectedRaiseValue = (progress*10)+checkValue+bigBlindValue;
 
-        raise.setText("raise\n$ "+ selectedRaiseValue);
+        raise.setText(getResources().getText(R.string.game_raise)+"\n$ "+ selectedRaiseValue);
 
         tggle_raise.setTextOff(raise.getText());
         tggle_raise.setTextOn(raise.getText());
@@ -335,23 +341,35 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
             for(ToggleButton btn : toggles){
                 btn.setVisibility(visibility);
             }
-            /*tggle_raise.setVisibility(visibility);
-            tggle_fold.setVisibility(visibility);
-            tggle_checkfold.setVisibility(visibility);
-            tggle_check.setVisibility(visibility);*/
         });
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) { }
 
+    private volatile boolean backPressedOnce=false;
     @Override
     public void onBackPressed() {
-        try {
-            connectedSocket.close();
-        } catch (IOException ioex){
-            ioex.printStackTrace();
+        if(backPressedOnce) {
+            exchanger.stopReceiver();
+            try {
+                connectedSocket.close();
+            } catch (IOException ioex) {
+                ioex.printStackTrace();
+            }
+            super.onBackPressed();
         }
-        super.onBackPressed();
+        else {
+            Toast.makeText(this, "Wciśnij jeszcze raz, aby się rozłączyć", Toast.LENGTH_SHORT).show();
+            backPressedOnce = true;
+            Timer t = new Timer();
+            t.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    backPressedOnce=false;
+                    t.cancel();
+                }
+            }, 1000, 1000);
+        }
     }
 }
