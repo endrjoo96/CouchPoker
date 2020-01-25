@@ -24,4 +24,5 @@
     <string name="game_toast_press_again">Wciśnij jeszcze raz, aby się rozłączyć…</string>
 
     <string name="waiting_for_start">Oczekiwanie na rozpoczęcie gry…</string>
+    <string name="disconnected_server_closed">Rozłączono: serwer został zamknięty</string>
 </resources>

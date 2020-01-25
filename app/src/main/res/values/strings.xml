@@ -24,4 +24,5 @@
     <string name="game_toast_press_again">Press again to disconnect…</string>
 
     <string name="waiting_for_start">Waiting for game to start…</string>
+    <string name="disconnected_server_closed">Disconnected: server has been closed</string>
 </resources>

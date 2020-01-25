@@ -198,6 +198,13 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
                 runOnUiThread(()->{updateUI();});
                 break;
             }
+            case KEYWORD.SERVER_RECEIVED_MESSAGE.DISCONNECT:{
+                runOnUiThread(()->{
+                    Toast.makeText(this, getResources().getText(R.string.disconnected_server_closed), Toast.LENGTH_LONG).show();
+                    finish();
+                });
+                break;
+            }
             default:{
                 if(incrementor<cardsToReceive){
                     cards[incrementor] = new Card(value, message);
