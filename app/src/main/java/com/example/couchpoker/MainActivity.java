@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setAttributes(params);
 
-            Button acceptButton = v.findViewById(R.id.button_fromDialog_acceptUsername);
-            EditText usernameEditText = v.findViewById(R.id.editText_fromDialog_username);
+            Button acceptButton = (Button) v.findViewById(R.id.button_fromDialog_acceptUsername);
+            EditText usernameEditText = (EditText) v.findViewById(R.id.editText_fromDialog_username);
 
             acceptButton.setEnabled(false);
 
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         receiver.dataReceived = this::onServerBroadcastReceive;
         receiver.runReceiver();
 
-        Button b = findViewById(R.id.button_config);
+        Button b = (Button) findViewById(R.id.button_config);
         b.setOnClickListener((View v)->{
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,

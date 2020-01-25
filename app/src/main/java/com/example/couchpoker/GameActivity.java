@@ -40,12 +40,12 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     TextView label1, label2, label3;
     TextView figure, currentBetText, ballance;
     View fragment_cards, fragment_waiting;
-    ImageView card1;
-    ImageView card2;
+    ImageView card1, card2, card3, card4, card5;
     SeekBar raiseSelect;
 
     ToggleButton tggle_checkfold, tggle_check, tggle_fold, tggle_raise;
     ArrayList<ToggleButton> toggles;
+    ArrayList<ImageView> cardsUI;
 
     Card[] cards;
 
@@ -78,8 +78,14 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
         currentBetText = findViewById(R.id.textView_currentBet);
         figure = findViewById(R.id.textView_figure);
         ballance = findViewById(R.id.textView_ballance);
+
         card1 = findViewById(R.id.imageView_card1);
         card2 = findViewById(R.id.imageView_card2);
+        card3 = findViewById(R.id.imageView_card3);
+        card4 = findViewById(R.id.imageView_card4);
+        card5 = findViewById(R.id.imageView_card5);
+        assignCardsToList();
+
         fragment_cards = findViewById(R.id.fragment_cards);
         fragment_waiting = findViewById(R.id.fragment_waiting);
         raiseSelect = findViewById(R.id.seekBar_raiseValue);
@@ -147,6 +153,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
                 cardsToReceive=Integer.parseInt(value);
                 incrementor=0;
                 cards = new Card[cardsToReceive];
+                runOnUiThread(()->{ adjustCardsNumber(cardsToReceive);});
                 break;
             }
             case KEYWORD.SERVER_RECEIVED_MESSAGE.YOUR_BALLANCE:{
@@ -313,17 +320,23 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
     }
 
     private void onShowCardsLongPress(){
-        card1.setImageResource(cards[0].getDrawableID());
-        card2.setImageResource(cards[1].getDrawableID());
+        for(int i=0; i<cards.length; i++){
+            cardsUI.get(i).setImageResource(cards[i].getDrawableID());
+        }
+        //card1.setImageResource(cards[0].getDrawableID());
+        //card2.setImageResource(cards[1].getDrawableID());
         figure.setVisibility(View.VISIBLE);
         label1.setVisibility(View.VISIBLE);
     }
 
     private void onShowCardsRelease(){
-        ImageView card1 = findViewById(R.id.imageView_card1);
-        card1.setImageResource(R.drawable.red_back);
-        ImageView card2 = findViewById(R.id.imageView_card2);
-        card2.setImageResource(R.drawable.red_back);
+        for(ImageView card : cardsUI){
+            card.setImageResource(R.drawable.red_back);
+        }
+        //ImageView card1 = findViewById(R.id.imageView_card1);
+        //card1.setImageResource(R.drawable.red_back);
+        //ImageView card2 = findViewById(R.id.imageView_card2);
+        //card2.setImageResource(R.drawable.red_back);
         figure.setVisibility(View.INVISIBLE);
         label1.setVisibility(View.INVISIBLE);
     }
@@ -342,6 +355,49 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
                 btn.setVisibility(visibility);
             }
         });
+    }
+
+    private void adjustCardsNumber(int cardsAmount){
+        assignCardsToList();
+        for (ImageView c : cardsUI){
+            c.setVisibility(View.GONE);
+        }
+        switch (cardsAmount){
+            case 5:{
+                for (ImageView c : cardsUI){
+                    c.setVisibility(View.GONE);
+                }
+                break;
+            }
+            case 4:{
+                cardsUI.get(0).setVisibility(View.VISIBLE);
+                cardsUI.get(1).setVisibility(View.VISIBLE);
+                cardsUI.get(3).setVisibility(View.VISIBLE);
+                cardsUI.get(4).setVisibility(View.VISIBLE);
+                cardsUI.remove(2);
+                break;
+            }
+            case 3:{
+                cardsUI.get(0).setVisibility(View.VISIBLE);
+                cardsUI.get(2).setVisibility(View.VISIBLE);
+                cardsUI.get(4).setVisibility(View.VISIBLE);
+                cardsUI.remove(3);
+                cardsUI.remove(1);
+                break;
+            }
+            case 2:{
+                cardsUI.get(0).setVisibility(View.VISIBLE);
+                cardsUI.get(4).setVisibility(View.VISIBLE);
+                cardsUI.remove(3);
+                cardsUI.remove(2);
+                cardsUI.remove(1);
+                break;
+            }
+        }
+    }
+
+    private void assignCardsToList(){
+        cardsUI = new ArrayList(Arrays.asList(card1, card2, card3, card4, card5));
     }
 
     @Override
