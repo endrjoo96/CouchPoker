@@ -37,9 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private UDPReceiver receiver;
 
     public static Socket connectedSocket;
-
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
             View v = inflater.inflate(R.layout.layout_nickname_popup, null);
 
-
             Dialog dialog = builder.setView(v).create();
             //Dialog dialog = builder.setView(new View(this)).create();
             WindowManager.LayoutParams params = new WindowManager.LayoutParams();
@@ -63,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setAttributes(params);
 
-            Button acceptButton = v.findViewById(R.id.button_fromDialog_acceptUsername);
-            EditText usernameEditText = v.findViewById(R.id.editText_fromDialog_username);
+            Button acceptButton = (Button) v.findViewById(R.id.button_fromDialog_acceptUsername);
+            EditText usernameEditText = (EditText) v.findViewById(R.id.editText_fromDialog_username);
 
             acceptButton.setEnabled(false);
 
@@ -96,12 +93,11 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-
         receiver = new UDPReceiver();
         receiver.dataReceived = this::onServerBroadcastReceive;
         receiver.runReceiver();
 
-        Button b = findViewById(R.id.button_config);
+        Button b = (Button) findViewById(R.id.button_config);
         b.setOnClickListener((View v)->{
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -111,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
             EditText editText = new EditText(layout.getContext());
             editText.setLayoutParams(lp);
             layout.addView(editText);
-
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -177,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 //dialog.dismiss();
             });
         }).start();
-
     }
 
     private void onServerBroadcastReceive(UDPReceiver.DataReceivedArgs args){
