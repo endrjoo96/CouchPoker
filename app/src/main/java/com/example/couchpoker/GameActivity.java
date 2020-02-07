@@ -19,7 +19,6 @@ import com.example.couchpoker.string_keys.KEYWORD;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Timer;
@@ -149,7 +148,7 @@ public class GameActivity extends AppCompatActivity implements CardsFragment.OnF
                 cards = new Card[cardsToReceive];
                 break;
             }
-            case KEYWORD.SERVER_RECEIVED_MESSAGE.YOUR_BALLANCE:{
+            case KEYWORD.SERVER_RECEIVED_MESSAGE.YOUR_BALANCE:{
                 totalBallance = Integer.parseInt(value);
                 runOnUiThread(()->{updateUI();});
                 break;
