@@ -85,6 +85,7 @@ public class Settings {
                 if(!readedLine.isEmpty())
                     value = readedLine.substring(readedLine.indexOf("|")+1);
             }
+            reader.close();
         }
         catch (FileNotFoundException ex) {}
         catch (IOException ioex){}

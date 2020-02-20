@@ -8,7 +8,7 @@ public abstract class KEYWORD {
     public static class SERVER_RECEIVED_MESSAGE {
         public static final String STARTED_NEW_ROUND = "STARTED_NEW_ROUND";
         public static final String SENDING_CARDS = "SENDING_CARDS";
-        public static final String YOUR_BALLANCE = "YOUR_BALLANCE";
+        public static final String YOUR_BALANCE = "YOUR_BALANCE";
         public static final String YOUR_BET = "YOUR_BET";
         public static final String CHECK_VALUE = "CHECK_VALUE";
         public static final String BIG_BLIND = "BIG_BLIND";
